@@ -102,14 +102,27 @@ if ($res === TRUE) {
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('Должность',$val);
 						break;
 					case 'K':
-						//if (!in_array($val,array('201','221','291','211','232','233','242','243','261','401','431','411','421','501','311','281','100','600')))
-						//{
-						//	$val = '600';
-						//}
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ККП',$val);
 						break;
 					case 'L':
-						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('УсловиеЗанятости',$val);
+						switch(strtolower($val))
+						{
+							case 'основное':
+								$val = '1';
+								break;
+							case 'внешнее совместительство':
+								$val = '2';
+								break;
+							case 'внутреннее совместительство':
+								$val = '3';
+								break;
+							default:
+								$val = '';
+						}
+						if ($val!='')
+						{
+							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('УсловиеЗанятости',$val);
+						}
 						break;
 					case 'M':
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('Ставка',$val);
@@ -165,7 +178,7 @@ if ($res === TRUE) {
 							default:
 								$val = '';
 						}
-						if ($val='')
+						if ($val!='')
 						{
 							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('КвалКатегория',$val);
 						}
