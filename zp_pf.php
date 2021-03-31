@@ -57,10 +57,9 @@ if ($res === TRUE) {
 			{
 				$column = preg_split("/\d+/", $c->attributes()->r)[0];
 				$num_si=(int)$c->v->__toString();
-				
+				$val = 'ОШИБКА';
 				if (isset($c->attributes()->t[0]))
-				{
-					$val = 'ОШИБКА';
+				{					
 					if ($c->attributes()->t[0] =='s')
 					{
 						$val = str_replace(',','.',$xml_shared_strings->children()->si[$num_si]->t->__toString());
@@ -72,7 +71,7 @@ if ($res === TRUE) {
 					$val = $num_si;
 				}
 				
-				if ($val!='0.00')
+				if ($val!=='0.00')
 				{
 				switch($column)
 				{
@@ -105,7 +104,7 @@ if ($res === TRUE) {
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ККП',$val);
 						break;
 					case 'L':
-						switch(strtolower($val))
+						switch($val)
 						{
 							case 'основное':
 								$val = '1';
@@ -119,7 +118,7 @@ if ($res === TRUE) {
 							default:
 								$val = '';
 						}
-						if ($val!='')
+						if ($val!=='')
 						{
 							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('УсловиеЗанятости',$val);
 						}
@@ -164,7 +163,8 @@ if ($res === TRUE) {
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаСМ',toMoney($val));
 						break;
 					case 'Z':
-						switch(strtolower($val))
+						
+						switch($val)
 						{
 							case 'первая':
 								$val = '1';
@@ -178,7 +178,7 @@ if ($res === TRUE) {
 							default:
 								$val = '';
 						}
-						if ($val!='')
+						if ($val!=='')
 						{
 							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('КвалКатегория',$val);
 						}
@@ -187,7 +187,7 @@ if ($res === TRUE) {
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаКвалКат',toMoney($val));
 						break;
 					case 'AB':
-						switch(strtolower($val))
+						switch($val)
 						{
 							case 'кандидат наук':
 								$val = '1';
@@ -198,9 +198,9 @@ if ($res === TRUE) {
 							default:
 								$val = '';
 						}
-						if ($val!='')
+						if ($val!=='')
 						{
-							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('КвалКатегория',$val);
+							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('УченаяСтепень',$val);
 						}
 						
 						break;
