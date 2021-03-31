@@ -1,6 +1,19 @@
 <?php
 
+//Таблица с данными
 $xlsx = 'СИоЗП_2021-03-15.xlsx';
+//Рег.номер в ПФР
+$pfrnumber = '111-111-111111';
+//ИНН
+$inn = '0123456789';
+//КПП
+$kpp='123456789';
+//ОКФС
+$okfs='13';
+//КТО
+$kto='4.1.01';
+//ОКОГУ
+$okogu='1320700';
 
 function toMoney(string $value)
 {
@@ -44,7 +57,23 @@ if ($res === TRUE) {
 			{
 				$column = preg_split("/\d+/", $c->attributes()->r)[0];
 				$num_si=(int)$c->v->__toString();
-				$val = str_replace(',','.',$xml_shared_strings->children()->si[$num_si]->t->__toString());
+				
+				if (isset($c->attributes()->t[0]))
+				{
+					$val = 'ОШИБКА';
+					if ($c->attributes()->t[0] =='s')
+					{
+						$val = str_replace(',','.',$xml_shared_strings->children()->si[$num_si]->t->__toString());
+					}
+					
+				}
+				else
+				{
+					$val = $num_si;
+				}
+				
+				if ($val!='0.00')
+				{
 				switch($column)
 				{
 					case 'A':
@@ -73,81 +102,119 @@ if ($res === TRUE) {
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('Должность',$val);
 						break;
 					case 'K':
+						//if (!in_array($val,array('201','221','291','211','232','233','242','243','261','401','431','411','421','501','311','281','100','600')))
+						//{
+						//	$val = '600';
+						//}
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ККП',$val);
 						break;
 					case 'L':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('УсловиеЗанятости',$val);
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('УсловиеЗанятости',$val);
 						break;
 					case 'M':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('Ставка',$val);
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('Ставка',$val);
 						break;
 					case 'N':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('РабВремяНорма',$val);
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('РабВремяНорма',$val);
 						break;
 					case 'O':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('РабВремяФакт',$val);
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('РабВремяФакт',$val);
 						break;
 					case 'P':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияТариф',$val);
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияТариф',toMoney($val));
 						break;
 					case 'Q':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ОУТ',$val);
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ОУТ',$val);
 						break;
 					case 'R':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияОУТ',$val);
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияОУТ',toMoney($val));
 						break;
 					case 'S':
 						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаСовмещение',toMoney($val));
 						break;
 					case 'T':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияИныеФед',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияИныеФед',toMoney($val));
 						break;
 					case 'U':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияИныеРег',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияИныеРег',toMoney($val));
 						break;
 					case 'V':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияПремии',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияПремии',toMoney($val));
 						break;
 					case 'W':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НепрерывныйСтаж',toStagWithMonth($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НепрерывныйСтаж',toStagWithMonth($val));
 						break;
 					case 'X':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаСтаж',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаСтаж',toMoney($val));
 						break;
 					case 'Y':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаСМ',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаСМ',toMoney($val));
 						break;
 					case 'Z':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('КвалКатегория',$val);
+						switch(strtolower($val))
+						{
+							case 'первая':
+								$val = '1';
+								break;
+							case 'вторая':
+								$val = '2';
+								break;
+							case 'высшая':
+								$val = '3';
+								break;
+							default:
+								$val = '';
+						}
+						if ($val='')
+						{
+							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('КвалКатегория',$val);
+						}
 						break;
 					case 'AA':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаКвалКат',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаКвалКат',toMoney($val));
 						break;
 					case 'AB':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('УченаяСтепень',$val);
+						switch(strtolower($val))
+						{
+							case 'кандидат наук':
+								$val = '1';
+								break;
+							case 'доктор наук':
+								$val = '2';
+								break;
+							default:
+								$val = '';
+						}
+						if ($val!='')
+						{
+							$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('КвалКатегория',$val);
+						}
+						
 						break;
 					case 'AC':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаУС',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаУС',toMoney($val));
 						break;
 					case 'AD':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаНаставничество',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаНаставничество',toMoney($val));
 						break;
 					case 'AE':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаМолодСпец',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ДоплатаМолодСпец',toMoney($val));
 						break;
 					case 'AF':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ВыплатыИныеСтимул',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ВыплатыИныеСтимул',toMoney($val));
 						break;
 					case 'AG':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ВыплатыПрочие',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ВыплатыПрочие',toMoney($val));
 						break;
 					case 'AH':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ВыплатыКомпенс',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('ВыплатыКомпенс',toMoney($val));
 						break;
 					case 'AI':
-					$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияИтого',toMoney($val));
+						$xml_out->СИоЗП->СЗП->Период[$num_period]->Работник->СЗПД->addChild('НачисленияИтого',toMoney($val));
 						break;
 				} //end_switch
+			} //endif
+				
 			}//column
 		}//endif
 	}//row
@@ -224,10 +291,16 @@ if ($res === TRUE) {
 		
 	} //endforeach
 	
-	
-	$xml_out->СлужебнаяИнформация->GUID[0] = GUID();
+	$guid = GUID();
+	$xml_out->СлужебнаяИнформация->GUID[0] = $guid;
 	$xml_out->СлужебнаяИнформация->ДатаВремя[0] = (string)date(DATE_ATOM);
 
+	$xml_out->СИоЗП->Организация->ИНН[0] = $inn;
+	$xml_out->СИоЗП->Организация->КПП[0] = $kpp;
+	$xml_out->СИоЗП->Организация->ОКФС[0] = $okfs;
+	$xml_out->СИоЗП->Организация->КТО[0] = $kto;
+	$xml_out->СИоЗП->Организация->ОКОГУ[0] = $okogu;
+	
 	$dom = new DOMDocument("1.0");
 	$dom->preserveWhiteSpace = false;
 	$dom->formatOutput = true;
@@ -250,7 +323,7 @@ if ($res === TRUE) {
 	'КПП' => 'УТ2:КПП'
 	];
 	
-	file_put_contents('xml_out_report.xml', strtr($content, $word_maps));
+	file_put_contents('ПФР_'.preg_split("/-/", $pfrnumber)[0].preg_split("/-/", $pfrnumber)[1].'_СИоЗП_'.preg_split("/-/", $pfrnumber)[0].preg_split("/-/", $pfrnumber)[1].preg_split("/-/", $pfrnumber)[2].'_'.(string)date('Ymd').'_'.$guid.'.xml', strtr($content, $word_maps));
 
 /* 	$dom->load('template_period.xml');
 	$tst = new DOMDocument;
